@@ -5,7 +5,8 @@
     "require": {
         "php": "^8.0.2",
         "illuminate/support": "^9.47",
-        "illuminate/contracts": "^9.47"
+        "illuminate/contracts": "^9.47",
+        "illuminate/database": "^9.47"
     },
     "autoload": {
         "psr-4": {
