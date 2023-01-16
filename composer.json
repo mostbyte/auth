@@ -1,0 +1,21 @@
+{
+    "name": "mostbyte/auth",
+    "description": "Mostbyte authorization system from identity service",
+    "type": "library",
+    "require": {
+        "php": "^8.0.2",
+        "illuminate/support": "^9.47",
+        "illuminate/contracts": "^9.47"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mostbyte\\Auth\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Фирдавс Ибодуллаев",
+            "email": "firdavs3253@gmail.com"
+        }
+    ]
+}
