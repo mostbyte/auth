@@ -14,7 +14,14 @@ return [
         |
         |
          */
-        'base_url' => env('IDENTITY_BASE_URL'),
+        'base_url' => env('IDENTITY_BASE_URL', 'https://auth.mostbyte.uz'),
+
+        /*
+        |-----------------------------------------
+        | API version
+        |-----------------------------------------
+         */
+        'version' => 'v1',
 
         /*
         |-----------------------------------------
