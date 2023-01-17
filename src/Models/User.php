@@ -2,12 +2,12 @@
 
 namespace Mostbyte\Auth\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticable;
 use Mostbyte\Auth\Casts\CompanyCast;
 use Mostbyte\Auth\Casts\RoleCast;
 use Mostbyte\Auth\Traits\Tokens;
 
-class User extends Model
+class User extends Authenticable
 {
     use Tokens;
 

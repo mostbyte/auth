@@ -37,6 +37,11 @@ trait LoginUser
 
         $data = identity()->checkToken($token);
 
+        if ($data['token'] !== $token) {
+            $this->forceStop();
+        }
+
+
         $attributes = $data['user'];
 
         if (!isset($attributes['company']) || !isset($attributes['role'])) {
