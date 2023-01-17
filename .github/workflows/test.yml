@@ -1,0 +1,32 @@
+name: test
+
+on: [push]
+
+jobs:
+  phpunit:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: true
+      matrix:
+        laravel: "9.0"
+        php: "8.0.2"
+
+    name: ${{matrix.laravel}}, PHP ${{matrix.php}}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: curl, mbstring, zip, pcntl, pdo, pdo_sqlite, iconv
+          coverage: none
+
+      - name: Install dependencies
+        run: composer require laravel/framework:^${{ matrix.laravel }}
+
+      - name: Execute tests
+        run: sudo vendor/bin/phpunit
