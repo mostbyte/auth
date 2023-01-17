@@ -5,9 +5,11 @@ namespace Mostbyte\Auth\Models;
 use Illuminate\Database\Eloquent\Model;
 use Mostbyte\Auth\Casts\CompanyCast;
 use Mostbyte\Auth\Casts\RoleCast;
+use Mostbyte\Auth\Traits\Tokens;
 
 class User extends Model
 {
+    use Tokens;
 
     protected $primaryKey = 'uuid';
     protected $keyType = 'string';
