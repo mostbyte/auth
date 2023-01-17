@@ -105,7 +105,7 @@ trait LoginUser
 
     public function login(array $attributes): void
     {
-        $user = app(User::class, $attributes);
+        $user = app(User::class, compact('attributes'));
         Auth::login($user);
     }
 }
