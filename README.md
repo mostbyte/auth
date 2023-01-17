@@ -6,7 +6,7 @@
 
 To get the latest version of `Mostbyte auth`, simply require the project using [Composer](https://getcomposer.org)
 ```bash
-$ composer require mostbyte/auth
+composer require mostbyte/auth
 ```
 
 Instead, you may of course manually update your require block and run `composer update` if you so choose:
@@ -16,6 +16,11 @@ Instead, you may of course manually update your require block and run `composer 
     "mostbyte/auth": "^1.0"
   }
 }
+```
+## Publishing config files
+
+```bash
+php artisan vendor:publish --provider="Mostbyte\Auth\AuthServiceProvider"
 ```
 
 ## Using
