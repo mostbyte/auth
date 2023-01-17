@@ -19,13 +19,15 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPublishes();
         $this->registerHelpers();
+
+        $this->app->singleton('identity', function () {
+            return new Identity();
+        });
     }
 
     protected function registerPublishes()
     {
-        $this->app->singleton('identity', function () {
-            return new Identity();
-        });
+        $this->mergeConfigFrom(__DIR__ . "/../config/mostbyte-auth.php", "mostbyte-auth");
 
         $this->publishes([
             __DIR__ . "/../config/mostbyte-auth.php" => config_path("mostbyte-auth.php")
