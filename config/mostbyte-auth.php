@@ -42,5 +42,16 @@ return [
     | Authorization duration time in seconds, in default it is 2 hours, given in seconds
     |
      */
-    'ttl' => 60 * 60 * 2
+    'ttl' => 60 * 60 * 2,
+
+    /*
+    |----------------------------------------------
+    | Local development
+    |----------------------------------------------
+    |
+    | If local development is "true", your all auth check requests will be used with fake responses.
+    | In production you should specify it as "false"
+    |
+     */
+    'local_development' => env('LOCAL_DEVELOPMENT', true)
 ];

@@ -53,7 +53,7 @@ class AuthServiceProvider extends ServiceProvider
 
     protected function registerFakeResponse()
     {
-        if ($this->app->environment(["local"])) {
+        if (config('mostbyte-auth.local_development')) {
 
             Http::fake([
                 identity("auth/check-token") => Http::response($this->fakeResponse())
