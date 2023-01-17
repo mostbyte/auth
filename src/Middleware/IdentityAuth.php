@@ -23,7 +23,7 @@ class IdentityAuth
      * @return Response|RedirectResponse
      * @throws RequestException
      */
-    public function handle(Request $request, Closure $next): Response|RedirectResponse
+    public function handle(Request $request, Closure $next): mixed
     {
         try {
             $token = $request->header('Authorization');
