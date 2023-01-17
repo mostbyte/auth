@@ -1,15 +1,19 @@
 <?php
+
+use Mostbyte\Auth\Identity;
+
 if (!function_exists('identity_url')) {
     /**
      * @param string $path
-     * @return string
+     * @return string|Identity
      */
-    function identity_url(string $path = ''): string
+    function identity(string $path = ''): string|Identity
     {
-        $base_url = config('mostybte-auth.identity.base_url');
-        $version = config('mostybte-auth.identity.version');
 
-        return sprintf("%s/api/%s/%s", $base_url, $version, $path);
+        if (!$path) {
+            return app('identity');
+        }
 
+        return app('identity')->getPath($path);
     }
 }

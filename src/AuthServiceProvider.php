@@ -22,6 +22,10 @@ class AuthServiceProvider extends ServiceProvider
 
     protected function registerPublishes()
     {
+        $this->app->singleton('identity', function () {
+            return new Identity();
+        });
+
         $this->publishes([
             __DIR__ . "/../config/mostbyte-auth.php" => config_path("mostbyte-auth.php")
         ], "config");
@@ -38,7 +42,7 @@ class AuthServiceProvider extends ServiceProvider
         if ($this->app->environment(["local"])) {
 
             Http::fake([
-                identity_url("auth/check-token") => Http::response($this->fakeResponse())
+                identity("auth/check-token") => Http::response($this->fakeResponse())
             ]);
         }
     }
