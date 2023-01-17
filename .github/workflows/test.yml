@@ -9,8 +9,8 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        laravel: "9.0"
-        php: "8.0.2"
+        laravel: ["9.0"]
+        php: ["8.0.2"]
 
     name: ${{matrix.laravel}}, PHP ${{matrix.php}}
 
