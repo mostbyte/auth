@@ -17,21 +17,13 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->registerPublishes();
+        $this->mergeConfigFrom(__DIR__ . "/../config/mostbyte-auth.php", "mostbyte-auth");
+
         $this->registerHelpers();
 
         $this->app->singleton('identity', function () {
             return new Identity();
         });
-    }
-
-    protected function registerPublishes()
-    {
-        $this->mergeConfigFrom(__DIR__ . "/../config/mostbyte-auth.php", "mostbyte-auth");
-
-        $this->publishes([
-            __DIR__ . "/../config/mostbyte-auth.php" => config_path("mostbyte-auth.php")
-        ], "config");
     }
 
     protected function registerHelpers()
@@ -45,9 +37,21 @@ class AuthServiceProvider extends ServiceProvider
      * Bootstrap any application services.
      *
      * @return void
-     * @throws BindingResolutionException
      */
     public function boot(): void
+    {
+        $this->registerPublishes();
+        $this->registerFakeResponse();
+    }
+
+    protected function registerPublishes()
+    {
+        $this->publishes([
+            __DIR__ . "/../config/mostbyte-auth.php" => config_path("mostbyte-auth.php")
+        ], "config");
+    }
+
+    protected function registerFakeResponse()
     {
         if ($this->app->environment(["local"])) {
 
