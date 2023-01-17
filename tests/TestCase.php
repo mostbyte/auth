@@ -44,7 +44,7 @@ abstract class TestCase extends Orchestra
 
     protected function setConfig(Repository $config)
     {
-        config()->set('mostbyte-auth', require __DIR__ . "/../config/mostbyte-auth.php");
+        $config->set('mostbyte-auth', require __DIR__ . "/../config/mostbyte-auth.php");
     }
 
     protected function getPackageProviders($app): array

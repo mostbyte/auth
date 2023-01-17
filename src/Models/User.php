@@ -7,6 +7,10 @@ use Mostbyte\Auth\Casts\CompanyCast;
 use Mostbyte\Auth\Casts\RoleCast;
 use Mostbyte\Auth\Traits\Tokens;
 
+/**
+ * @property-read Company $company
+ * @property-read Role $role
+ */
 class User extends Authenticable
 {
     use Tokens;
