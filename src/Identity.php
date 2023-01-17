@@ -56,6 +56,6 @@ class Identity
         return Http::withHeaders($headers)
             ->post($this->getPath('auth/check-token'))
             ->throw()
-            ->json();
+            ->json('data');
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Mostbyte\Auth\Traits;
 
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -26,6 +27,7 @@ trait LoginUser
      * @param string $token
      * @param bool $is_valid_token
      * @return array
+     * @throws RequestException
      */
     public function prepareAttributesForLogin(string $token, bool $is_valid_token): array
     {
@@ -33,30 +35,25 @@ trait LoginUser
             return $attributes;
         }
 
-        try {
-            $data = identity()->checkToken($token);
+        $data = identity()->checkToken($token);
 
-            $attributes = $data['user'];
+        $attributes = $data['user'];
 
-            if (!isset($attributes['company']) || !isset($attributes['role'])) {
-                $this->forceStop();
-            }
-
-            Cache::put(
-                CacheConstant::withPrefix(CacheConstant::AUTH_USER),
-                $attributes,
-                $this->setTTL($data["tokenExpires"])
-            );
-
-            Cache::put(
-                CacheConstant::withPrefix(CacheConstant::AUTH_TOKEN),
-                $token,
-                $this->setTTL($data["tokenExpires"])
-            );
-
-        } catch (\Exception) {
+        if (!isset($attributes['company']) || !isset($attributes['role'])) {
             $this->forceStop();
         }
+
+        Cache::put(
+            CacheConstant::withPrefix(CacheConstant::AUTH_USER),
+            $attributes,
+            $this->setTTL($data["tokenExpires"])
+        );
+
+        Cache::put(
+            CacheConstant::withPrefix(CacheConstant::AUTH_TOKEN),
+            $token,
+            $this->setTTL($data["tokenExpires"])
+        );
 
         return $attributes;
     }

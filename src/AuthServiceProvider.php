@@ -18,6 +18,7 @@ class AuthServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->registerPublishes();
+        $this->registerHelpers();
     }
 
     protected function registerPublishes()
@@ -29,6 +30,13 @@ class AuthServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . "/../config/mostbyte-auth.php" => config_path("mostbyte-auth.php")
         ], "config");
+    }
+
+    protected function registerHelpers()
+    {
+        foreach (glob(__DIR__ . "/../helpers/*.php") as $helper) {
+            require $helper;
+        }
     }
 
     /**
@@ -61,7 +69,7 @@ class AuthServiceProvider extends ServiceProvider
             "data" => [
                 "token" => app(User::class)->getToken(),
                 "refreshToken" => "s6PLorf3T1kqI84Dj9+fpwhIJc3n3pvrWqJytwXeoBy8GmH7WSDdk5ilFnXNjT5ThVm9m+UXMwJvNft9oAbECA==",
-                "tokenExpires" => "2022-11-03T11:02:01.972744Z",
+                "tokenExpires" => "2023-11-03T11:02:01.972744Z",
                 "user" => User::attributes()
             ]
         ];
