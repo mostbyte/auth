@@ -17,7 +17,14 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->mergeConfigFrom(__DIR__ . "/../config/mostbyte-auth.php", "mostbyte-auth");
+        $this->registerPublishes();
+    }
+
+    protected function registerPublishes()
+    {
+        $this->publishes([
+            __DIR__ . "/../config/mostbyte-auth.php" => config_path("mostbyte-auth.php")
+        ], "config");
     }
 
     /**
@@ -28,11 +35,10 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if ($this->app->environment(['local'])) {
-            $base_url = config('mostbyte-auth.identity.base');
+        if ($this->app->environment(["local"])) {
 
             Http::fake([
-                $base_url . "/auth/check-token" => Http::response($this->fakeResponse())
+                identity_url("auth/check-token") => Http::response($this->fakeResponse())
             ]);
         }
     }
