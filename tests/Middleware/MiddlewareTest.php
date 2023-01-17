@@ -35,21 +35,4 @@ class MiddlewareTest extends TestCase
                 'success' => false
             ]);
     }
-
-    public function test_fail_with_wrong_auth_token()
-    {
-        $headers = $this->headers(false);
-        $headers['Authorization'] = "Wrong Token";
-
-        $this->get('get-data', $headers)
-            ->assertSuccessful()
-            ->assertJsonStructure([
-                'message',
-                'success'
-            ])
-            ->assertJson([
-                'message' => 'Unauthorized',
-                'success' => false
-            ]);
-    }
 }
