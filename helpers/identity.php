@@ -2,7 +2,7 @@
 
 use Mostbyte\Auth\Identity;
 
-if (!function_exists('identity_url')) {
+if (!function_exists('identity')) {
     /**
      * @param string $path
      * @return string|Identity
