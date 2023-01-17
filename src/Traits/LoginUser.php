@@ -7,6 +7,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Mostbyte\Auth\Constants\CacheConstant;
+use Mostbyte\Auth\Exceptions\InvalidTokenException;
 use Mostbyte\Auth\Models\User;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
@@ -24,14 +25,18 @@ trait LoginUser
     }
 
     /**
-     * @param string $token
-     * @param bool $is_valid_token
+     * @param string|null $token
      * @return array
+     * @throws InvalidTokenException
      * @throws RequestException
      */
-    public function prepareAttributesForLogin(string $token, bool $is_valid_token): array
+    public function prepareAttributesForLogin(?string $token = null): array
     {
-        if ($is_valid_token && $attributes = Cache::get(CacheConstant::withPrefix(CacheConstant::AUTH_USER))) {
+        if (!$token) {
+            $this->forceStop();
+        }
+
+        if ($this->checkTokens($token) && $attributes = Cache::get(CacheConstant::withPrefix(CacheConstant::AUTH_USER))) {
             return $attributes;
         }
 
@@ -40,7 +45,6 @@ trait LoginUser
         if ($data['token'] !== $token) {
             $this->forceStop();
         }
-
 
         $attributes = $data['user'];
 
@@ -81,12 +85,13 @@ trait LoginUser
 
     /**
      * @return void
+     * @throws InvalidTokenException
      */
     public function forceStop(): void
     {
         $this->clearCache();
 
-        abort(ResponseAlias::HTTP_UNAUTHORIZED);
+        throw new InvalidTokenException();
     }
 
     /**

@@ -5,6 +5,7 @@ namespace Mostbyte\Auth;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
+use Mostbyte\Auth\Exceptions\InvalidTokenException;
 
 class Identity
 {
