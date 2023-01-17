@@ -3,7 +3,6 @@
 namespace Mostbyte\Auth;
 
 use Illuminate\Http\Client\RequestException;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
