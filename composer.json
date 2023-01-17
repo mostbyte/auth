@@ -2,6 +2,7 @@
   "name": "mostbyte/auth",
   "description": "Mostbyte authorization system from identity service",
   "type": "library",
+  "license": "MIT",
   "require": {
     "php": "^8.0.2",
     "illuminate/support": "^9.0",
