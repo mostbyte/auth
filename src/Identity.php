@@ -26,7 +26,7 @@ class Identity
 
         $version = config("mostbyte-auth.identity.version");
 
-        $this->url = sprintf("%s/%s", $this->base_url, $version);
+        $this->url = sprintf("%s/api/%s", $this->base_url, $version);
     }
 
     /**
@@ -56,7 +56,9 @@ class Identity
 
         return Http::withHeaders($headers)
             ->post($this->getPath('auth/check-token'))
-            ->throw()
+            ->throw(function ($http, $exception) {
+                throw new InvalidTokenException();
+            })
             ->json('data');
     }
 }
