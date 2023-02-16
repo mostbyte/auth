@@ -13,12 +13,15 @@ use Orchestra\Testbench\TestCase as Orchestra;
 
 abstract class TestCase extends Orchestra
 {
+    /**
+     * @throws BindingResolutionException
+     */
     protected function setUp(): void
     {
         parent::setUp();
 
         Http::fake([
-            app('identity')->getPath("auth/check-token") => Http::response($this->fakeResponse())
+            app('identity')->getPath("auth/check-token") . '*' => Http::response($this->fakeResponse())
         ]);
     }
 

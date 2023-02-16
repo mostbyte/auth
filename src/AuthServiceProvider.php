@@ -21,8 +21,8 @@ class AuthServiceProvider extends ServiceProvider
 
         $this->registerHelpers();
 
-        $this->app->singleton('identity', function () {
-            return new Identity();
+        $this->app->singleton('identity', function ($app) {
+            return new Identity($app['request']);
         });
     }
 

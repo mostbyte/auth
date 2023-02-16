@@ -2,7 +2,7 @@
 
 namespace Mostbyte\Auth;
 
-use Illuminate\Http\Client\RequestException;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Mostbyte\Auth\Exceptions\InvalidTokenException;
@@ -19,46 +19,61 @@ class Identity
      */
     private string $url;
 
+    /**
+     * @var string company name
+     */
+    private string $company;
 
-    public function __construct()
+
+    public function __construct(Request $request)
     {
         $this->base_url = config("mostbyte-auth.identity.base_url");
 
         $version = config("mostbyte-auth.identity.version");
 
         $this->url = sprintf("%s/api/%s", $this->base_url, $version);
+
+        $this->company = explode('.', $request->host())[0];
     }
 
     /**
      * Get path
      *
      * @param string $path
+     * @param array $parameters
      * @return string
      */
-    public function getPath(string $path): string
+    public function getPath(string $path, array $parameters = []): string
     {
         $path = Str::of($path)->trim("/");
 
-        return sprintf("%s/%s", $this->url, $path);
+        $query_parameters = http_build_query($parameters);
+
+        return sprintf("%s/%s?%s", $this->url, $path, $query_parameters);
     }
 
     /**
      * Check token is valid or not
      *
-     * @throws RequestException
+     * @param $token
+     * @return array
+     * @throws InvalidTokenException
      */
-    public function checkToken($token)
+    public function checkToken($token): array
     {
         $headers = array_merge(
             config('mostbyte-auth.identity.headers'),
             ['Authorization' => $token]
         );
 
-        return Http::withHeaders($headers)
-            ->post($this->getPath('auth/check-token'))
-            ->throw(function ($http, $exception) {
-                throw new InvalidTokenException();
-            })
-            ->json('data');
+        $request = Http::withHeaders($headers)
+            ->post($this->getPath('auth/check-token', ['domain' => $this->company]));
+
+        if ($request->failed()) {
+            throw new InvalidTokenException();
+        }
+
+        return $request->json('data');
+
     }
 }

@@ -39,7 +39,7 @@ class IdentityAuth
             return response([
                 'success' => false,
                 'message' => 'Unauthorized'
-            ]);
+            ], 401);
         }
 
         return $next($request);

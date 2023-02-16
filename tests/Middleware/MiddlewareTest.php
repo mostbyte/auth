@@ -25,7 +25,7 @@ class MiddlewareTest extends TestCase
     public function test_fail_without_auth_token()
     {
         $this->get('get-data', $this->headers(false))
-            ->assertSuccessful()
+            ->assertUnauthorized()
             ->assertJsonStructure([
                 'message',
                 'success'
