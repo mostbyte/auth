@@ -2,8 +2,6 @@
 
 namespace Mostbyte\Auth\Constants;
 
-use Illuminate\Config\Repository;
-use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Facades\Request;
 
 class CacheConstant

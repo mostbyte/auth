@@ -2,14 +2,12 @@
 
 namespace Mostbyte\Auth\Traits;
 
-use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Mostbyte\Auth\Constants\CacheConstant;
 use Mostbyte\Auth\Exceptions\InvalidTokenException;
 use Mostbyte\Auth\Models\User;
-use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 trait LoginUser
 {
@@ -28,7 +26,6 @@ trait LoginUser
      * @param string|null $token
      * @return array
      * @throws InvalidTokenException
-     * @throws RequestException
      */
     public function prepareAttributesForLogin(?string $token = null): array
     {

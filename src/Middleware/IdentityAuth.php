@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Mostbyte\Auth\Exceptions\InvalidTokenException;
 use Mostbyte\Auth\Traits\LoginUser;
-use Throwable;
 
 class IdentityAuth
 {
