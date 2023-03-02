@@ -21,7 +21,7 @@ abstract class TestCase extends Orchestra
         parent::setUp();
 
         Http::fake([
-            app('identity')->getPath("auth/check-token") . '*' => Http::response($this->fakeResponse())
+            app('identity')->getPath("auth/check-token") . "*" => Http::response($this->fakeResponse())
         ]);
     }
 
