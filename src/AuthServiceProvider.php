@@ -51,12 +51,15 @@ class AuthServiceProvider extends ServiceProvider
         ], "config");
     }
 
+    /**
+     * @throws BindingResolutionException
+     */
     protected function registerFakeResponse()
     {
         if (config('mostbyte-auth.local_development')) {
 
             Http::fake([
-                identity("auth/check-token") => Http::response($this->fakeResponse())
+                identity("auth/check-token*") => Http::response($this->fakeResponse())
             ]);
         }
     }
