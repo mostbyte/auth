@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests;
+namespace MATests;
 
 use Illuminate\Config\Repository;
 use Illuminate\Contracts\Container\BindingResolutionException;

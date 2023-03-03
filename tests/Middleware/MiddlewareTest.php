@@ -1,8 +1,8 @@
 <?php
 
-namespace Tests\Middleware;
+namespace MATests\Middleware;
 
-use Tests\TestCase;
+use MATests\TestCase;
 
 class MiddlewareTest extends TestCase
 {

@@ -1,12 +1,12 @@
 <?php
 
-namespace Tests\Middleware;
+namespace MATests\Middleware;
 
 use Illuminate\Support\Facades\Auth;
 use Mostbyte\Auth\Models\Company;
 use Mostbyte\Auth\Models\Role;
 use Mostbyte\Auth\Models\User;
-use Tests\TestCase;
+use MATests\TestCase;
 
 class UserDataTest extends TestCase
 {
