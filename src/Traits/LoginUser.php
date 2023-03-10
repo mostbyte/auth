@@ -100,5 +100,6 @@ trait LoginUser
     {
         $user = app(User::class, compact('attributes'));
         Auth::login($user);
+        Auth::user()->setToken(Cache::get(CacheConstant::withPrefix(CacheConstant::AUTH_TOKEN)));
     }
 }
