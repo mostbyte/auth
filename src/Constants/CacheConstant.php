@@ -30,6 +30,7 @@ class CacheConstant
         $company = identity()->getCompany();
 
         $suffix[] = request()->ip();
+        $suffix[] = request()->userAgent();
 
         $suffix = implode('-', $suffix);
 
