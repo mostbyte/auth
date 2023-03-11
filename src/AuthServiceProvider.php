@@ -37,6 +37,7 @@ class AuthServiceProvider extends ServiceProvider
      * Bootstrap any application services.
      *
      * @return void
+     * @throws BindingResolutionException
      */
     public function boot(): void
     {

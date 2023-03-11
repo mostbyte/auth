@@ -24,15 +24,18 @@ class CacheConstant
      * Get cache key with prefix ip and user-agent
      *
      * @param string $key
-     * @param string $suffix
+     * @param string|array $suffix
      * @return string
      */
-    public static function withPrefix(string $key, string $suffix = ''): string
+    public static function withPrefix(string $key, ...$suffix): string
     {
+        $company = identity()->getCompany();
+
+        $suffix = implode('-', $suffix);
+
         return sprintf(
-            '%s-%s-%s-%s',
-            Request::ip(),
-            Request::userAgent(),
+            '%s-%s-%s',
+            $company,
             $key,
             $suffix
         );

@@ -74,6 +74,10 @@ class Identity
         }
 
         return $request->json('data');
+    }
 
+    public function getCompany()
+    {
+        return $this->company;
     }
 }
