@@ -2,13 +2,11 @@
 
 namespace Mostbyte\Auth\Constants;
 
-use Illuminate\Support\Facades\Request;
-
 class CacheConstant
 {
 
-    const AUTH_TOKEN = "auth.token";
-    const AUTH_USER = "auth.user";
+    const AUTH_TOKEN = "auth-token";
+    const AUTH_USER = "auth-user";
 
     /**
      * Auth TTL time
@@ -30,6 +28,8 @@ class CacheConstant
     public static function withPrefix(string $key, ...$suffix): string
     {
         $company = identity()->getCompany();
+
+        $suffix[] = request()->ip();
 
         $suffix = implode('-', $suffix);
 
