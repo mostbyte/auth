@@ -20,7 +20,6 @@ class IdentityAuth
      * @param Request $request
      * @param Closure $next
      * @return Response|RedirectResponse
-     * @throws RequestException
      */
     public function handle(Request $request, Closure $next): mixed
     {
