@@ -69,7 +69,7 @@ class Identity
         $request = Http::withHeaders($headers)
             ->post($this->getPath('auth/check-token', ['domain' => $this->company]));
 
-        if ($request->failed()) {
+        if ($request->failed() || !$request->json('success')) {
             throw new InvalidTokenException();
         }
 
