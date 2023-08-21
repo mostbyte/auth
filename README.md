@@ -15,7 +15,7 @@ Instead, you may of course manually update your require block and run `composer 
 ```json
 {
   "require": {
-    "mostbyte/auth": "^1.0"
+    "mostbyte/auth": "^2.0"
   }
 }
 ```

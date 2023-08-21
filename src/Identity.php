@@ -33,7 +33,7 @@ class Identity
 
         $this->url = sprintf("%s/api/%s", $this->base_url, $version);
 
-        $this->company = explode('.', $request->host())[0];
+        $this->company = Str::of(parse_url($request->url(), PHP_URL_PATH))->trim('/')->explode('/')[0];
     }
 
     /**
