@@ -67,7 +67,7 @@ trait LoginUser
     protected function setTTL(string $timestamp): int
     {
         $date = Carbon::createFromTimeString($timestamp);
-        $diff = $date->diffInSeconds(now());
+        $diff = now()->diffInSeconds($date);
 
         if ($diff - CacheConstant::ttl() > 0) {
             return CacheConstant::ttl();
