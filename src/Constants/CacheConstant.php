@@ -2,11 +2,11 @@
 
 namespace Mostbyte\Auth\Constants;
 
-class CacheConstant
+enum CacheConstant: string
 {
 
-    const AUTH_TOKEN = "auth-token";
-    const AUTH_USER = "auth-user";
+    case AUTH_TOKEN = "auth-token";
+    case AUTH_USER = "auth-user";
 
     /**
      * Auth TTL time
@@ -21,11 +21,10 @@ class CacheConstant
     /**
      * Get cache key with prefix ip and user-agent
      *
-     * @param string $key
-     * @param string|array $suffix
+     * @param mixed ...$suffix
      * @return string
      */
-    public static function withPrefix(string $key, ...$suffix): string
+    public function withPrefix(...$suffix): string
     {
         $company = identity()->getCompany();
 
@@ -37,7 +36,7 @@ class CacheConstant
         return sprintf(
             '%s-%s-%s',
             $company,
-            $key,
+            $this->value,
             $suffix
         );
     }

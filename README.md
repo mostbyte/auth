@@ -2,6 +2,13 @@
 
 #### Mostbyte authorization system from identity service
 
+## Versions
+
+| Laravel | Auth |
+|:--------|:-----|
+| < 10.x  | 2.x  |
+| 11.x    | 3.x  |
+
 ## Installation
 
 To get the latest version of `Mostbyte auth`, simply require the project using [Composer](https://getcomposer.org)
@@ -15,7 +22,7 @@ Instead, you may of course manually update your require block and run `composer 
 ```json
 {
   "require": {
-    "mostbyte/auth": "^2.0"
+    "mostbyte/auth": "^3.0"
   }
 }
 ```

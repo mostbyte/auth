@@ -2,6 +2,7 @@
 
 namespace Mostbyte\Auth\Traits;
 
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -19,13 +20,19 @@ trait LoginUser
      */
     public function checkTokens(?string $token): bool
     {
-        return $token === Cache::get(CacheConstant::withPrefix(CacheConstant::AUTH_TOKEN));
+        return $token === Cache::get(CacheConstant::AUTH_TOKEN->withPrefix());
+    }
+
+    protected function cacheKey(...$keys): string
+    {
+        return CacheConstant::AUTH_USER->withPrefix(...$keys);
     }
 
     /**
      * @param string|null $token
      * @return array
      * @throws InvalidTokenException
+     * @throws ConnectionException
      */
     public function prepareAttributesForLogin(?string $token = null): array
     {
@@ -33,7 +40,7 @@ trait LoginUser
             $this->forceStop();
         }
 
-        if ($this->checkTokens($token) && $attributes = Cache::get(CacheConstant::withPrefix(CacheConstant::AUTH_USER))) {
+        if ($this->checkTokens($token) && $attributes = Cache::get($this->cacheKey())) {
             return $attributes;
         }
 
@@ -46,13 +53,13 @@ trait LoginUser
         }
 
         Cache::put(
-            CacheConstant::withPrefix(CacheConstant::AUTH_USER),
+            $this->cacheKey(),
             $attributes,
             $this->setTTL($data["tokenExpires"])
         );
 
         Cache::put(
-            CacheConstant::withPrefix(CacheConstant::AUTH_TOKEN),
+            CacheConstant::AUTH_TOKEN->withPrefix(),
             $token,
             $this->setTTL($data["tokenExpires"])
         );
@@ -67,7 +74,8 @@ trait LoginUser
     protected function setTTL(string $timestamp): int
     {
         $date = Carbon::createFromTimeString($timestamp);
-        $diff = now()->diffInSeconds($date);
+
+        $diff = now()->diffInSeconds($date, true);
 
         if ($diff - CacheConstant::ttl() > 0) {
             return CacheConstant::ttl();
@@ -92,14 +100,19 @@ trait LoginUser
      */
     public function clearCache(): void
     {
-        Cache::forget(CacheConstant::withPrefix(CacheConstant::AUTH_TOKEN));
-        Cache::forget(CacheConstant::withPrefix(CacheConstant::AUTH_USER));
+        Cache::forget(CacheConstant::AUTH_TOKEN->withPrefix());
+        Cache::forget($this->cacheKey());
     }
 
     public function login(array $attributes): void
     {
         $user = app(User::class, compact('attributes'));
+
         Auth::login($user);
-        Auth::user()->setToken(Cache::get(CacheConstant::withPrefix(CacheConstant::AUTH_TOKEN)));
+
+        /** @var User $user */
+        $user = Auth::user();
+
+        $user->setToken(Cache::get(CacheConstant::AUTH_TOKEN->withPrefix()));
     }
 }

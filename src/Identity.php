@@ -2,6 +2,7 @@
 
 namespace Mostbyte\Auth;
 
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
@@ -58,13 +59,14 @@ class Identity
      * @param $token
      * @return array
      * @throws InvalidTokenException
+     * @throws ConnectionException
      */
     public function checkToken($token): array
     {
-        $headers = array_merge(
-            config('mostbyte-auth.identity.headers'),
-            ['Authorization' => $token]
-        );
+        $headers = [
+            'Authorization' => $token,
+            ...config('mostbyte-auth.identity.headers')
+        ];
 
         $request = Http::withHeaders($headers)
             ->post($this->getPath('auth/check-token', ['domain' => $this->company]));

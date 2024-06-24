@@ -3,7 +3,7 @@
 namespace Mostbyte\Auth\Middleware;
 
 use Closure;
-use Illuminate\Http\Client\RequestException;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -34,10 +34,19 @@ class IdentityAuth
 
             $this->clearCache();
 
+            report($exception);
+
             return response([
                 'success' => false,
                 'message' => 'Unauthorized'
             ], 401);
+        } catch (ConnectionException $e) {
+            report($e);
+
+            return response([
+                'success' => false,
+                'message'=> 'Auth service is not responding'
+            ]);
         }
 
         return $next($request);
