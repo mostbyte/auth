@@ -51,7 +51,7 @@ Route::middleware(IdentityAuth::class)->get("foo", function () {
 or specify in `App\Http\Kernel.php`
 
 ```php
-protected $routeMiddleware = [
+protected $middlewareAliases = [
     // other middlewares...
     "identity" => \Mostbyte\Auth\Middleware\IdentityAuth::class
 ];
