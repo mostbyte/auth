@@ -20,7 +20,7 @@ trait LoginUser
      */
     public function checkTokens(?string $token): bool
     {
-        $saved_token = Cache::get($th);
+        $saved_token = Cache::get($this->tokenCacheKey());
 
         return $saved_token && $token === $saved_token;
     }
