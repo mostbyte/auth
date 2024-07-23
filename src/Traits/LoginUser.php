@@ -20,12 +20,19 @@ trait LoginUser
      */
     public function checkTokens(?string $token): bool
     {
-        return $token === Cache::get(CacheConstant::AUTH_TOKEN->withPrefix());
+        $saved_token = Cache::get($th);
+
+        return $saved_token && $token === $saved_token;
     }
 
     protected function cacheKey(...$keys): string
     {
         return CacheConstant::AUTH_USER->withPrefix(...$keys);
+    }
+
+    protected function tokenCacheKey(...$keys): string
+    {
+        return CacheConstant::AUTH_TOKEN->withPrefix(...$keys);
     }
 
     /**
@@ -36,7 +43,7 @@ trait LoginUser
      */
     public function prepareAttributesForLogin(?string $token = null): array
     {
-        if (!$token) {
+        if (blank($token)) {
             $this->forceStop();
         }
 
@@ -59,7 +66,7 @@ trait LoginUser
         );
 
         Cache::put(
-            CacheConstant::AUTH_TOKEN->withPrefix(),
+            $this->tokenCacheKey(),
             $token,
             $this->setTTL($data["tokenExpires"])
         );
@@ -100,10 +107,13 @@ trait LoginUser
      */
     public function clearCache(): void
     {
-        Cache::forget(CacheConstant::AUTH_TOKEN->withPrefix());
+        Cache::forget($this->tokenCacheKey());
         Cache::forget($this->cacheKey());
     }
 
+    /**
+     * @throws InvalidTokenException
+     */
     public function login(array $attributes): void
     {
         $user = app(User::class, compact('attributes'));
@@ -113,6 +123,12 @@ trait LoginUser
         /** @var User $user */
         $user = Auth::user();
 
-        $user->setToken(Cache::get(CacheConstant::AUTH_TOKEN->withPrefix()));
+        $token = Cache::get($this->tokenCacheKey());
+
+        if (blank($token)) {
+            throw new InvalidTokenException("Token is empty");
+        }
+
+        $user->setToken($token);
     }
 }

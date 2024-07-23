@@ -30,11 +30,11 @@ class IdentityAuth
 
             $this->login($attributes);
 
-        } catch (InvalidTokenException $exception) {
+        } catch (InvalidTokenException $e) {
 
             $this->clearCache();
 
-            report($exception);
+            report($e);
 
             return response([
                 'success' => false,
