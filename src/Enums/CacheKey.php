@@ -1,8 +1,8 @@
 <?php
 
-namespace Mostbyte\Auth\Constants;
+namespace Mostbyte\Auth\Enums;
 
-enum CacheConstant: string
+enum CacheKey: string
 {
 
     case AUTH_TOKEN = "auth-token";

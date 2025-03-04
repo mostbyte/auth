@@ -26,7 +26,7 @@ class AuthServiceProvider extends ServiceProvider
         });
     }
 
-    protected function registerHelpers()
+    protected function registerHelpers(): void
     {
         foreach (glob(__DIR__ . "/../helpers/*.php") as $helper) {
             require $helper;
@@ -45,7 +45,7 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerFakeResponse();
     }
 
-    protected function registerPublishes()
+    protected function registerPublishes(): void
     {
         $this->publishes([
             __DIR__ . "/../config/mostbyte-auth.php" => config_path("mostbyte-auth.php")
@@ -55,7 +55,7 @@ class AuthServiceProvider extends ServiceProvider
     /**
      * @throws BindingResolutionException
      */
-    protected function registerFakeResponse()
+    protected function registerFakeResponse(): void
     {
         if (config('mostbyte-auth.local_development')) {
 
@@ -69,7 +69,6 @@ class AuthServiceProvider extends ServiceProvider
      * Get fake response for check token route
      *
      * @return array
-     * @throws BindingResolutionException
      */
     private function fakeResponse(): array
     {

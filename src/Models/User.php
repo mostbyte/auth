@@ -2,9 +2,8 @@
 
 namespace Mostbyte\Auth\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticable;
-use Mostbyte\Auth\Casts\CompanyCast;
-use Mostbyte\Auth\Casts\RoleCast;
 use Mostbyte\Auth\Traits\Tokens;
 
 /**
@@ -18,12 +17,6 @@ class User extends Authenticable
     protected $primaryKey = 'uuid';
     protected $keyType = 'string';
 
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     protected $fillable = [
         'uuid',
         'username',
@@ -31,16 +24,9 @@ class User extends Authenticable
         'surname',
         'patronymic',
         'email',
-        'company',
         'branch',
         'createdAt',
         'updatedAt',
-        'role',
-    ];
-
-    protected $casts = [
-        'company' => CompanyCast::class,
-        'role' => RoleCast::class
     ];
 
     /**
@@ -63,5 +49,15 @@ class User extends Authenticable
             "updatedAt" => "2022-10-21T09:32:33.255876Z",
             "role" => Role::attributes()
         ];
+    }
+
+    public function company(): BelongsTo
+    {
+        return $this->belongsTo(Company::class);
+    }
+
+    public function role(): BelongsTo
+    {
+        return $this->belongsTo(Role::class);
     }
 }

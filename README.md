@@ -4,10 +4,10 @@
 
 ## Versions
 
-| Laravel | Auth |
-|:--------|:-----|
-| < 10.x  | 2.x  |
-| 11.x    | 3.x  |
+| Laravel   | Auth |
+|:----------|:-----|
+| < 10.x    | 2.x  |
+| 11.x,12.x | 3.x  |
 
 ## Installation
 

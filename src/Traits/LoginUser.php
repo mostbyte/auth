@@ -6,7 +6,7 @@ use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
-use Mostbyte\Auth\Constants\CacheConstant;
+use Mostbyte\Auth\Enums\CacheKey;
 use Mostbyte\Auth\Exceptions\InvalidTokenException;
 use Mostbyte\Auth\Models\User;
 
@@ -15,24 +15,22 @@ trait LoginUser
     /**
      * Check is token valid
      *
-     * @param string|null $token
+     * @param string $token
      * @return bool
      */
-    public function checkTokens(?string $token): bool
+    public function checkTokens(string $token): bool
     {
-        $saved_token = Cache::get($this->tokenCacheKey());
-
-        return $saved_token && $token === $saved_token;
+        return $token === Cache::get($this->tokenCacheKey());
     }
 
     protected function cacheKey(...$keys): string
     {
-        return CacheConstant::AUTH_USER->withPrefix(...$keys);
+        return CacheKey::AUTH_USER->withPrefix(...$keys);
     }
 
     protected function tokenCacheKey(...$keys): string
     {
-        return CacheConstant::AUTH_TOKEN->withPrefix(...$keys);
+        return CacheKey::AUTH_TOKEN->withPrefix(...$keys);
     }
 
     /**
@@ -44,7 +42,7 @@ trait LoginUser
     public function prepareAttributesForLogin(?string $token = null): array
     {
         if (blank($token)) {
-            $this->forceStop();
+            $this->forceStop('Token is empty');
         }
 
         if ($this->checkTokens($token) && $attributes = Cache::get($this->cacheKey())) {
@@ -56,7 +54,7 @@ trait LoginUser
         $attributes = $data['user'];
 
         if (!isset($attributes['company']) || !isset($attributes['role'])) {
-            $this->forceStop();
+            $this->forceStop('User does not have right company or role');
         }
 
         Cache::put(
@@ -84,22 +82,23 @@ trait LoginUser
 
         $diff = now()->diffInSeconds($date, true);
 
-        if ($diff - CacheConstant::ttl() > 0) {
-            return CacheConstant::ttl();
+        if ($diff - CacheKey::ttl() > 0) {
+            return CacheKey::ttl();
         }
 
         return $diff;
     }
 
     /**
+     * @param string $message
      * @return void
      * @throws InvalidTokenException
      */
-    public function forceStop(): void
+    public function forceStop(string $message = ''): void
     {
         $this->clearCache();
 
-        throw new InvalidTokenException();
+        throw new InvalidTokenException($message);
     }
 
     /**
@@ -116,18 +115,16 @@ trait LoginUser
      */
     public function login(array $attributes): void
     {
-        $user = app(User::class, compact('attributes'));
-
-        Auth::login($user);
-
-        /** @var User $user */
-        $user = Auth::user();
-
         $token = Cache::get($this->tokenCacheKey());
 
         if (blank($token)) {
-            throw new InvalidTokenException("Token is empty");
+            $this->forceStop("Token is empty");
         }
+
+        Auth::login($this->getUser($attributes));
+
+        /** @var User $user */
+        $user = Auth::user();
 
         $user->setToken($token);
     }

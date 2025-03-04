@@ -68,8 +68,9 @@ class Identity
             ...config('mostbyte-auth.identity.headers')
         ];
 
-        $request = Http::withHeaders($headers)
-            ->post($this->getPath('auth/check-token', ['domain' => $this->company]));
+        $path = $this->getPath('auth/check-token', ['domain' => $this->company]);
+
+        $request = Http::withHeaders($headers)->post($path);
 
         if ($request->failed() || !$request->json('success')) {
             throw new InvalidTokenException();

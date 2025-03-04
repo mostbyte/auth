@@ -1,40 +1,40 @@
 {
-    "name": "mostbyte/auth",
-    "description": "Mostbyte authorization system from identity service",
-    "type": "library",
-    "license": "MIT",
-    "require": {
-        "php": "^8.2",
-        "illuminate/support": "^11.0",
-        "illuminate/contracts": "^11.0",
-        "illuminate/database": "^11.0",
-        "guzzlehttp/guzzle": "^7.8"
-    },
-    "require-dev": {
-        "orchestra/testbench": "^9.0",
-        "phpunit/phpunit": "^11.0"
-    },
-    "autoload": {
-        "psr-4": {
-            "Mostbyte\\Auth\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "MATests\\": "tests/"
-        }
-    },
-    "authors": [
-        {
-            "name": "Firdavs Ibodullaev",
-            "email": "firdavs3253@gmail.com"
-        }
-    ],
-    "extra": {
-        "laravel": {
-            "providers": [
-                "Mostbyte\\Auth\\AuthServiceProvider"
-            ]
-        }
+  "name": "mostbyte/auth",
+  "description": "Mostbyte authorization system from identity service",
+  "type": "library",
+  "license": "MIT",
+  "require": {
+    "php": "^8.2",
+    "illuminate/support": "^11.0|^12.0",
+    "illuminate/contracts": "^11.0|^12.0",
+    "illuminate/database": "^11.0|^12.0",
+    "guzzlehttp/guzzle": "^7.8"
+  },
+  "require-dev": {
+    "orchestra/testbench": "^9.0",
+    "phpunit/phpunit": "^11.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Mostbyte\\Auth\\": "src/"
     }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "MATests\\": "tests/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Firdavs Ibodullaev",
+      "email": "firdavs3253@gmail.com"
+    }
+  ],
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Mostbyte\\Auth\\AuthServiceProvider"
+      ]
+    }
+  }
 }
