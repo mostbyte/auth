@@ -41,13 +41,11 @@ class User extends Authenticable
             "surname" => "Test",
             "patronymic" => "Test",
             "email" => "testtest@test.test",
-            "company" => Company::attributes(),
             "branch" => [
                 "id" => 1
             ],
             "createdAt" => "2022-10-21T09:32:33.255876Z",
             "updatedAt" => "2022-10-21T09:32:33.255876Z",
-            "role" => Role::attributes()
         ];
     }
 
