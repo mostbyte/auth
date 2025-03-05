@@ -25,6 +25,8 @@ class User extends Authenticable
         'patronymic',
         'email',
         'branch',
+        'company_id',
+        'role_id',
         'createdAt',
         'updatedAt',
     ];
