@@ -10,6 +10,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
 use Mostbyte\Auth\Exceptions\InvalidTokenException;
 use Mostbyte\Auth\Models\Company;
+use Mostbyte\Auth\Models\Role;
 use Mostbyte\Auth\Models\User;
 use Mostbyte\Auth\Traits\LoginUser;
 use Throwable;
@@ -73,7 +74,7 @@ class IdentityAuth
 
         if (isset($attributes['role'])) {
             $user->setAttribute('role_id', $attributes['role']['id']);
-            $user->setRelation('role', $attributes['role']);
+            $user->setRelation('role', new Role($attributes['role']));
         }
 
         return $user;
