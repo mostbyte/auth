@@ -71,7 +71,9 @@ class IdentityAuth
 
     protected function getUser(array $attributes): User
     {
-        $user = new User(Arr::except($attributes, ['company', 'role']));
+        $user_attributes = $attributes;
+        $user = new User(Arr::except($user_attributes, ['company', 'role']));
+
         if (isset($attributes['company'])) {
             $user->setAttribute('company_id', $attributes['company']['id']);
             $user->setRelation('company', new Company($attributes['company']));
