@@ -48,6 +48,8 @@ class User extends Authenticable
             ],
             "createdAt" => "2022-10-21T09:32:33.255876Z",
             "updatedAt" => "2022-10-21T09:32:33.255876Z",
+            'company' => Company::attributes(),
+            'role' => Role::attributes(),
         ];
     }
 
