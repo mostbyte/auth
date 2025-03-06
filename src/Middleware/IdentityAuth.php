@@ -19,22 +19,27 @@ class IdentityAuth
 {
     use LoginUser;
 
+    public static function using(?string $args = null): string
+    {
+        return static::class . ($args ? ":$args" : '');
+    }
+
     /**
      * Handle an incoming request.
      *
      * @param Request $request
      * @param Closure $next
+     * @param string|null $args
      * @return Response|RedirectResponse
      */
-    public function handle(Request $request, Closure $next): mixed
+    public function handle(Request $request, Closure $next, ?string $args = null): mixed
     {
         try {
             $token = $request->header('Authorization');
 
-            $attributes = $this->prepareAttributesForLogin($token);
+            $attributes = $this->prepareAttributesForLogin($token, $args);
 
             $this->login($attributes);
-
         } catch (InvalidTokenException $e) {
 
             $this->clearCache();

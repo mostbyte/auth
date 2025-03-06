@@ -35,11 +35,12 @@ trait LoginUser
 
     /**
      * @param string|null $token
+     * @param string|null $args
      * @return array
-     * @throws InvalidTokenException
      * @throws ConnectionException
+     * @throws InvalidTokenException
      */
-    public function prepareAttributesForLogin(?string $token = null): array
+    public function prepareAttributesForLogin(?string $token = null, ?string $args = null): array
     {
         if (blank($token)) {
             $this->forceStop('Token is empty');
@@ -49,7 +50,7 @@ trait LoginUser
             return $attributes;
         }
 
-        $data = identity()->checkToken($token);
+        $data = identity()->checkToken($token, $args);
 
         $attributes = $data['user'];
 

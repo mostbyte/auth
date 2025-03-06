@@ -57,18 +57,23 @@ class Identity
      * Check token is valid or not
      *
      * @param $token
+     * @param string|null $args
      * @return array
-     * @throws InvalidTokenException
      * @throws ConnectionException
+     * @throws InvalidTokenException
      */
-    public function checkToken($token): array
+    public function checkToken($token, ?string $args = null): array
     {
         $headers = [
             'Authorization' => $token,
             ...config('mostbyte-auth.identity.headers')
         ];
 
-        $path = $this->getPath('auth/check-token', ['domain' => $this->company]);
+        $path = $this->getPath('auth/check-token',
+            $args === 'no-domain'
+                ? ['domain' => $this->company]
+                : []
+        );
 
         $request = Http::withHeaders($headers)->post($path);
 
