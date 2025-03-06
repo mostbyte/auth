@@ -52,9 +52,6 @@ class AuthServiceProvider extends ServiceProvider
         ], "config");
     }
 
-    /**
-     * @throws BindingResolutionException
-     */
     protected function registerFakeResponse(): void
     {
         if (config('mostbyte-auth.local_development')) {
