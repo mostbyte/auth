@@ -71,8 +71,8 @@ class Identity
 
         $path = $this->getPath('auth/check-token',
             $args === 'no-domain'
-                ? ['domain' => $this->company]
-                : []
+                ? []
+                : ['domain' => $this->company]
         );
 
         $request = Http::withHeaders($headers)->post($path);
