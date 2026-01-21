@@ -23,7 +23,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class Branch extends Model
 {
-    protected $guarded = ['id'];
+    protected $guarded = [];
 
     /**
      * @return array

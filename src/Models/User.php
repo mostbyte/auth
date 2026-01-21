@@ -35,7 +35,7 @@ class User extends Authenticable
     protected $primaryKey = 'uuid';
     protected $keyType = 'string';
 
-    protected $guarded = ['uuid'];
+    protected $guarded = [];
 
     /**
      * @return array

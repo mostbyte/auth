@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Role extends Model
 {
-    protected $guarded = ['id'];
+    protected $guarded = [];
 
     /**
      * @return array
