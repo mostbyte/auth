@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mostbyte\Auth\Traits;
 
 use Illuminate\Http\Client\ConnectionException;
@@ -54,10 +56,6 @@ trait LoginUser
 
         $attributes = $data['user'];
 
-        if (!isset($attributes['company']) || !isset($attributes['role'])) {
-            $this->forceStop('User does not have right company or role');
-        }
-
         Cache::put(
             $this->cacheKey(),
             $attributes,
@@ -87,7 +85,7 @@ trait LoginUser
             return CacheKey::ttl();
         }
 
-        return $diff;
+        return (int)$diff;
     }
 
     /**

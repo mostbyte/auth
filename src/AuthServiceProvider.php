@@ -1,15 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mostbyte\Auth;
 
-use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\ServiceProvider;
+use Mostbyte\Auth\Models\Branch;
+use Mostbyte\Auth\Models\Company;
+use Mostbyte\Auth\Models\Role;
 use Mostbyte\Auth\Models\User;
 
 class AuthServiceProvider extends ServiceProvider
 {
-
     /**
      * Register any application services.
      *
@@ -37,7 +40,6 @@ class AuthServiceProvider extends ServiceProvider
      * Bootstrap any application services.
      *
      * @return void
-     * @throws BindingResolutionException
      */
     public function boot(): void
     {
@@ -48,22 +50,21 @@ class AuthServiceProvider extends ServiceProvider
     protected function registerPublishes(): void
     {
         $this->publishes([
-            __DIR__ . "/../config/mostbyte-auth.php" => config_path("mostbyte-auth.php")
+            __DIR__ . "/../config/mostbyte-auth.php" => config_path("mostbyte-auth.php"),
         ], "config");
     }
 
     protected function registerFakeResponse(): void
     {
         if (config('mostbyte-auth.local_development')) {
-
             Http::fake([
-                identity("auth/check-token") . "*" => Http::response($this->fakeResponse())
+                identity("auth/check-token") . "*" => Http::response($this->fakeResponse()),
             ]);
         }
     }
 
     /**
-     * Get fake response for check token route
+     * Get a fake response for check token route
      *
      * @return array
      */
@@ -74,10 +75,19 @@ class AuthServiceProvider extends ServiceProvider
             "message" => "Token is valid!",
             "data" => [
                 "token" => app(User::class)->getToken(),
-                "refreshToken" => "s6PLorf3T1kqI84Dj9+fpwhIJc3n3pvrWqJytwXeoBy8GmH7WSDdk5ilFnXNjT5ThVm9m+UXMwJvNft9oAbECA==",
-                "tokenExpires" => "2023-11-03T11:02:01.972744Z",
-                "user" => User::attributes()
-            ]
+                "refreshToken" => "xsdRkyecDBbCdgchEbAc7X3RKiA3xH2UYzLf3ClW03gvoKrsGFPmYKBZwgWJMD1QSd3TeEiIEyzjtwERv8Sjdw==",
+                "tokenExpires" => now()->addHours(2)->toISOString(),
+                "user" => [
+                    ...User::attributes(),
+                    "company" => Company::attributes(),
+                    "branch" => [
+                        ...Branch::attributes(),
+                        'company' => Company::attributes(),
+                    ],
+                    "role" => Role::attributes(),
+
+                ],
+            ],
         ];
     }
 }

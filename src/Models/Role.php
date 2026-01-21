@@ -1,23 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mostbyte\Auth\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property-read int    $id
+ * @property-read string $name
+ * @property-read string $nameUz
+ * @property-read string $nameRu
+ * @property-read string $nameEng
+ */
 class Role extends Model
 {
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'id',
-        'name',
-        'nameUz',
-        'nameRu',
-        'nameEng'
-    ];
+    protected $guarded = ['id'];
 
     /**
      * @return array
@@ -29,7 +27,7 @@ class Role extends Model
             "name" => "owner",
             "nameUz" => "Owner uz",
             "nameRu" => "Owner ru",
-            "nameEng" => "Owner eng"
+            "nameEng" => "Owner eng",
         ];
     }
 }

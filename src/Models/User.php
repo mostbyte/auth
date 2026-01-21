@@ -1,14 +1,32 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mostbyte\Auth\Models;
 
+use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticable;
 use Mostbyte\Auth\Traits\Tokens;
 
 /**
- * @property-read Company $company
- * @property-read Role $role
+ * @property-read string          $uuid
+ * @property-read string          $userName
+ * @property-read string          $firstName
+ * @property-read string          $surname
+ * @property-read string          $patronymic
+ * @property-read string          $email
+ * @property-read string          $phoneNumber
+ * @property-read int|null        $companyId
+ * @property-read int|null        $branchId
+ * @property-read int             $roleId
+ * @property-read CarbonInterface $createdAt
+ * @property-read CarbonInterface $updatedAt
+ * @property-read string|null     $deletedAt
+ * @property-read bool            $isActive
+ * @property-read Company|null    $company
+ * @property-read Branch|null     $branch
+ * @property-read Role            $role
  */
 class User extends Authenticable
 {
@@ -17,19 +35,7 @@ class User extends Authenticable
     protected $primaryKey = 'uuid';
     protected $keyType = 'string';
 
-    protected $fillable = [
-        'uuid',
-        'username',
-        'firstName',
-        'surname',
-        'patronymic',
-        'email',
-        'branch',
-        'company_id',
-        'role_id',
-        'createdAt',
-        'updatedAt',
-    ];
+    protected $guarded = ['uuid'];
 
     /**
      * @return array
@@ -38,24 +44,27 @@ class User extends Authenticable
     {
         return [
             "uuid" => "b011826c-d530-49e3-8374-4f6904c53633",
-            "username" => "testtest",
+            "userName" => "testuser",
             "firstName" => "Test",
-            "surname" => "Test",
-            "patronymic" => "Test",
-            "email" => "testtest@test.test",
-            "branch" => [
-                "id" => 1
-            ],
-            "createdAt" => "2022-10-21T09:32:33.255876Z",
-            "updatedAt" => "2022-10-21T09:32:33.255876Z",
-            'company' => Company::attributes(),
-            'role' => Role::attributes(),
+            "surname" => "User",
+            "patronymic" => "Testovich",
+            "email" => "test@example.com",
+            "phoneNumber" => "+998901234567",
+            "createdAt" => "2023-04-06T15:43:33.091392Z",
+            "updatedAt" => "2023-04-06T15:43:33.091392Z",
+            "deletedAt" => null,
+            "isActive" => true,
         ];
     }
 
     public function company(): BelongsTo
     {
         return $this->belongsTo(Company::class);
+    }
+
+    public function branch(): BelongsTo
+    {
+        return $this->belongsTo(Branch::class);
     }
 
     public function role(): BelongsTo

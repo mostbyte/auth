@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mostbyte\Auth\Enums;
 
 enum CacheKey: string
@@ -19,7 +21,7 @@ enum CacheKey: string
     }
 
     /**
-     * Get cache key with prefix ip and user-agent
+     * Get a cache key with prefix ip and user-agent
      *
      * @param mixed ...$suffix
      * @return string

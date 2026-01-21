@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mostbyte\Auth\Traits;
 
 use Mostbyte\Auth\Models\User;

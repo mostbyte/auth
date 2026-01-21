@@ -2,7 +2,6 @@
 
 namespace MATests\Middleware;
 
-use Illuminate\Support\Facades\Auth;
 use Mostbyte\Auth\Models\Company;
 use Mostbyte\Auth\Models\Role;
 use Mostbyte\Auth\Models\User;
@@ -12,8 +11,7 @@ class UserDataTest extends TestCase
 {
     public function test_user_has_correct_keys()
     {
-        $attributes = User::attributes();
-        Auth::login(app(User::class, compact('attributes')));
+        $this->get('get-data', $this->headers())->assertSuccessful();
 
         $user = auth()->user();
 
