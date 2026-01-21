@@ -69,6 +69,10 @@ When `LOCAL_DEVELOPMENT=true`, HTTP requests to the identity service are mocked 
 
 Tests use Orchestra Testbench to simulate Laravel environment. Test files are in `tests/` directory with mocked HTTP responses to the identity service.
 
-## Git Commits
+## Git
 
+### Commits
 - Do NOT add `Co-Authored-By` to commit messages
+
+### Tags
+- Do NOT use `v` prefix in version tags (use `4.1.0`, not `v4.1.0`)
