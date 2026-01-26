@@ -68,22 +68,4 @@ class IdentityAuth
 
         return $next($request);
     }
-
-    protected function getUser(array $attributes): User
-    {
-        $user_attributes = $attributes;
-        $user = new User(Arr::except($user_attributes, ['company', 'role']));
-
-        if (isset($attributes['company'])) {
-            $user->setAttribute('company_id', $attributes['company']['id']);
-            $user->setRelation('company', new Company($attributes['company']));
-        }
-
-        if (isset($attributes['role'])) {
-            $user->setAttribute('role_id', $attributes['role']['id']);
-            $user->setRelation('role', new Role($attributes['role']));
-        }
-
-        return $user;
-    }
 }
