@@ -41,7 +41,7 @@ class Identity
      * Get path
      *
      * @param string $path
-     * @param array $parameters
+     * @param array  $parameters
      * @return string
      */
     public function getPath(string $path, array $parameters = []): string
@@ -56,7 +56,7 @@ class Identity
     /**
      * Check token is valid or not
      *
-     * @param $token
+     * @param             $token
      * @param string|null $args
      * @return array
      * @throws ConnectionException
@@ -65,8 +65,8 @@ class Identity
     public function checkToken($token, ?string $args = null): array
     {
         $headers = [
-            'Authorization' => $token,
-            ...config('mostbyte-auth.identity.headers')
+            'Authorization' => $this->prepareToken($token),
+            ...config('mostbyte-auth.identity.headers'),
         ];
 
         $path = $this->getPath('auth/check-token',
@@ -82,6 +82,15 @@ class Identity
         }
 
         return $request->json('data');
+    }
+
+    protected function prepareToken(string $token): string
+    {
+        if (!str_starts_with($token, 'Bearer ') && !str_starts_with($token, 'bearer ')) {
+            $token = "Bearer $token";
+        }
+
+        return $token;
     }
 
     public function getCompany()

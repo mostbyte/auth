@@ -17,14 +17,10 @@ class Guard
         protected         $provider = null,
     ) {}
 
-    public function __invoke(Request $request)
+    public function __invoke(Request $request): ?Models\User
     {
-        $user = $this->auth->guard('identity')->user();
-
-        if ($user) {
-            return $user;
-        }
         $token = $this->getTokenFromRequest($request);
+
         if (!$token) {
             return null;
         }
