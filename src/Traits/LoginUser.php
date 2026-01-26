@@ -5,11 +5,14 @@ declare(strict_types=1);
 namespace Mostbyte\Auth\Traits;
 
 use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Mostbyte\Auth\Enums\CacheKey;
 use Mostbyte\Auth\Exceptions\InvalidTokenException;
+use Mostbyte\Auth\Models\Company;
+use Mostbyte\Auth\Models\Role;
 use Mostbyte\Auth\Models\User;
 
 trait LoginUser
@@ -126,5 +129,23 @@ trait LoginUser
         $user = Auth::user();
 
         $user->setToken($token);
+    }
+
+    protected function getUser(array $attributes): User
+    {
+        $user_attributes = $attributes;
+        $user = new User(Arr::except($user_attributes, ['company', 'role']));
+
+        if (isset($attributes['company'])) {
+            $user->setAttribute('company_id', $attributes['company']['id']);
+            $user->setRelation('company', new Company($attributes['company']));
+        }
+
+        if (isset($attributes['role'])) {
+            $user->setAttribute('role_id', $attributes['role']['id']);
+            $user->setRelation('role', new Role($attributes['role']));
+        }
+
+        return $user;
     }
 }

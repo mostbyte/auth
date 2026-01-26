@@ -30,9 +30,19 @@ return [
         |
          */
         'headers' => [
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ],
     ],
+
+    /*
+     |--------------------------------------------
+     | Guard
+     |--------------------------------------------
+     |
+     | Authorization guard
+     |
+     */
+    'guard' => ['identity'],
 
     /*
     |---------------------------------------------
@@ -53,5 +63,5 @@ return [
     | In production you should specify it as "false"
     |
      */
-    'local_development' => env('LOCAL_DEVELOPMENT', true)
+    'local_development' => env('LOCAL_DEVELOPMENT', true),
 ];
