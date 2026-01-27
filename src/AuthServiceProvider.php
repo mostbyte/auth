@@ -28,6 +28,10 @@ class AuthServiceProvider extends ServiceProvider
                 'driver' => 'identity',
                 'provider' => null,
             ], config('auth.guards.identity', [])),
+            'auth.guards.identity-no-domain' => array_merge([
+                'driver' => 'identity-no-domain',
+                'provider' => null,
+            ], config('auth.guards.identity-no-domain', [])),
         ]);
 
         if ($this->app->configurationIsCached()) {
@@ -78,14 +82,23 @@ class AuthServiceProvider extends ServiceProvider
                 });
             });
         });
+
+        Auth::resolved(function (Factory $auth) {
+            $auth->extend('identity-no-domain', function ($app, $name, array $config) use ($auth) {
+                return tap($this->createGuard($auth, $config, true), function ($guard) {
+                    app()->refresh('request', $guard, 'setRequest');
+                });
+            });
+        });
     }
 
-    protected function createGuard(Factory $auth, array $config): RequestGuard
+    protected function createGuard(Factory $auth, array $config, bool $no_domain = false): RequestGuard
     {
         return new RequestGuard(
             new Guard(
                 $auth,
                 $config['provider'],
+                $no_domain
             ),
             request(),
             $auth->createUserProvider($config['provider'] ?? null)

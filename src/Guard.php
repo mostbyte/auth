@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Mostbyte\Auth;
 
-use Mostbyte\Auth\Exceptions\InvalidTokenException;
 use Illuminate\Contracts\Auth\Factory;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Request;
+use Mostbyte\Auth\Exceptions\InvalidTokenException;
 use Mostbyte\Auth\Traits\LoginUser;
 
 class Guard
@@ -17,6 +17,7 @@ class Guard
     public function __construct(
         protected Factory $auth,
         protected         $provider = null,
+        protected bool    $no_domain = false
     ) {}
 
     public function __invoke(Request $request): ?Models\User
@@ -28,7 +29,9 @@ class Guard
         }
 
         try {
-            $attributes = $this->prepareAttributesForLogin($token);
+            $args = $this->no_domain ? 'no-domain' : null;
+
+            $attributes = $this->prepareAttributesForLogin($token, $args);
         } catch (ConnectionException|InvalidTokenException $e) {
             $this->clearCache();
             report($e);
