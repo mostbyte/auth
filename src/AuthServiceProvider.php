@@ -34,7 +34,7 @@ class AuthServiceProvider extends ServiceProvider
             ], config('auth.guards.identity-no-domain', [])),
         ]);
 
-        if ($this->app->configurationIsCached()) {
+        if (!$this->app->configurationIsCached()) {
             $this->mergeConfigFrom(__DIR__ . "/../config/mostbyte-auth.php", "mostbyte-auth");
         }
 
