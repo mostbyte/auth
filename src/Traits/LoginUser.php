@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Mostbyte\Auth\Enums\CacheKey;
 use Mostbyte\Auth\Exceptions\InvalidTokenException;
+use Mostbyte\Auth\Models\Branch;
 use Mostbyte\Auth\Models\Company;
 use Mostbyte\Auth\Models\Role;
 use Mostbyte\Auth\Models\User;
@@ -133,19 +134,47 @@ trait LoginUser
 
     protected function getUser(array $attributes): User
     {
-        $user_attributes = $attributes;
-        $user = new User(Arr::except($user_attributes, ['company', 'role']));
+        $userAttributes = $this->castDates($attributes);
+        $userAttributes['companyId'] = Arr::get($userAttributes, 'company.id');
+        $userAttributes['roleId'] = Arr::get($userAttributes, 'role.id');
+        $userAttributes['branchId'] = Arr::get($userAttributes, 'branch.id');
+
+        $user = new User(Arr::except($userAttributes, ['company', 'role', 'branch']));
 
         if (isset($attributes['company'])) {
-            $user->setAttribute('company_id', $attributes['company']['id']);
-            $user->setRelation('company', new Company($attributes['company']));
+            $user->setRelation('company', new Company($this->castDates($attributes['company'])));
         }
 
-        if (isset($attributes['role'])) {
-            $user->setAttribute('role_id', $attributes['role']['id']);
-            $user->setRelation('role', new Role($attributes['role']));
+        $user->setRelation('role', new Role($attributes['role']));
+
+        if (isset($attributes['branch'])) {
+            $branchAttributes = Arr::except($attributes['branch'], ['company']);
+            $branchAttributes['companyId'] = Arr::get($branchAttributes, 'company.id');
+            $branch = new Branch($this->castDates($branchAttributes));
+
+            if (isset($attributes['branch']['company'])) {
+                $branch->setRelation('company', new Company($this->castDates($attributes['branch']['company'])));
+            }
+
+            $user->setRelation('branch', $branch);
         }
 
         return $user;
+    }
+
+    /**
+     * Cast date strings to Carbon instances
+     */
+    protected function castDates(array $attributes): array
+    {
+        $dateFields = ['createdAt', 'updatedAt'];
+
+        foreach ($dateFields as $field) {
+            if (isset($attributes[$field]) && is_string($attributes[$field])) {
+                $attributes[$field] = \Carbon\Carbon::parse($attributes[$field]);
+            }
+        }
+
+        return $attributes;
     }
 }

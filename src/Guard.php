@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mostbyte\Auth;
 
 use Mostbyte\Auth\Exceptions\InvalidTokenException;
