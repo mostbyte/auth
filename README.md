@@ -53,10 +53,19 @@ php artisan vendor:publish --provider="Mostbyte\Auth\AuthServiceProvider"
 | Variable | Description | Default |
 |:---------|:------------|:--------|
 | `IDENTITY_BASE_URL` | Identity service URL | `https://auth.mostbyte.uz` |
-| `LOCAL_DEVELOPMENT` | Enable mock responses | `true` |
+| `LOCAL_DEVELOPMENT` | Enable mock responses | `false` |
 
 > **Warning**
-> Set `LOCAL_DEVELOPMENT=false` in production. Otherwise, all HTTP requests to the identity service will return fake responses.
+> `LOCAL_DEVELOPMENT=true` makes every request to the identity service return a fake
+> success response, so **any token is accepted as a valid superUser**. It is an
+> authorization bypass, not a convenience flag. The default is `false` so that a
+> service which never sets the variable is secure; opt in explicitly in your local
+> `.env` only.
+>
+> Changed in **5.0.0** — previously the default was `true`, which meant a deploy that
+> forgot to set `LOCAL_DEVELOPMENT=false` ran with authorization disabled. If you are
+> upgrading and relied on the old default for local work, add
+> `LOCAL_DEVELOPMENT=true` to your local `.env`.
 
 ## Usage
 

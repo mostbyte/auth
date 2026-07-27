@@ -59,11 +59,11 @@ Route::middleware(IdentityAuth::using('no-domain'))->get("foo", fn() => "bar");
 ### Environment Variables
 
 - `IDENTITY_BASE_URL` - Identity service URL (default: `https://auth.mostbyte.uz`)
-- `LOCAL_DEVELOPMENT` - Set `true` for mock responses, `false` in production
+- `LOCAL_DEVELOPMENT` - Set `true` for mock responses. **Defaults to `false`** (since 5.0.0) because `true` accepts any token as superUser — opt in locally only, never in a deployed `.env`.
 
 ### Local Development Mode
 
-When `LOCAL_DEVELOPMENT=true`, HTTP requests to the identity service are mocked with fake test user data. Set to `false` for production to use real identity service.
+When `LOCAL_DEVELOPMENT=true`, `AuthServiceProvider::registerFakeResponse()` installs an `Http::fake()` on `auth/check-token` that always returns `success: true` — so **every token is accepted as a valid superUser**. This is an authorization bypass, which is why the published default is `false`; a service that never sets the variable is secure by default. Opt in only in a local `.env`.
 
 ## Testing
 

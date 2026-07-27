@@ -59,9 +59,12 @@ return [
     | Local development
     |----------------------------------------------
     |
-    | If local development is "true", your all auth check requests will be used with fake responses.
-    | In production you should specify it as "false"
+    | If local development is "true", all auth check requests are answered with
+    | fake responses — every token is accepted as a valid superUser. Because that
+    | is a full authorization bypass, the default is "false": a service that never
+    | sets LOCAL_DEVELOPMENT stays secure. Opt in explicitly with
+    | LOCAL_DEVELOPMENT=true in your local .env, and never in a deployed .env.
     |
      */
-    'local_development' => env('LOCAL_DEVELOPMENT', true),
+    'local_development' => env('LOCAL_DEVELOPMENT', false),
 ];
