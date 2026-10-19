@@ -19,24 +19,33 @@ use Mostbyte\Auth\Models\User;
 trait LoginUser
 {
     /**
-     * Check is token valid
-     *
-     * @param string $token
-     * @return bool
+     * Токен текущего вызова: нужен для clearCache() без аргумента (совместимость).
+     * Перезаписывается при каждом prepareAttributesForLogin и сбрасывается после очистки.
      */
-    public function checkTokens(string $token): bool
+    private ?string $currentToken = null;
+
+    private ?string $currentArgs = null;
+
+    /**
+     * Есть ли в кэше атрибуты пользователя для этого токена
+     */
+    public function checkTokens(string $token, ?string $args = null): bool
     {
-        return $token === Cache::get($this->tokenCacheKey());
+        return Cache::has($this->cacheKey($token, $args));
     }
 
-    protected function cacheKey(...$keys): string
+    /**
+     * Ключ кэша привязан к хэшу токена, а не к ip/device-id (их контролирует клиент или NAT).
+     * $args учитывается: no-domain даёт другой ответ check-token.
+     */
+    protected function cacheKey(string $token, ?string $args = null): string
     {
-        return CacheKey::AUTH_USER->withPrefix(...$keys);
+        return CacheKey::AUTH_USER->withToken($this->normalizeToken($token), $args);
     }
 
-    protected function tokenCacheKey(...$keys): string
+    protected function normalizeToken(string $token): string
     {
-        return CacheKey::AUTH_TOKEN->withPrefix(...$keys);
+        return trim(preg_replace('/^bearer\s+/i', '', trim($token)));
     }
 
     /**
@@ -48,39 +57,39 @@ trait LoginUser
      */
     public function prepareAttributesForLogin(?string $token = null, ?string $args = null): array
     {
+        $this->currentToken = filled($token) ? $token : null;
+        $this->currentArgs = $args;
+
         if (blank($token)) {
             $this->forceStop('Token is empty');
         }
 
-        if ($this->checkTokens($token) && $attributes = Cache::get($this->cacheKey())) {
-            return $attributes;
+        $key = $this->cacheKey($token, $args);
+
+        $cached = Cache::get($key);
+
+        if (is_array($cached) && $cached !== []) {
+            return $cached;
         }
 
         $data = identity()->checkToken($token, $args);
 
         $attributes = $data['user'];
 
-        Cache::put(
-            $this->cacheKey(),
-            $attributes,
-            $this->setTTL($data["tokenExpires"])
-        );
-
-        Cache::put(
-            $this->tokenCacheKey(),
-            $token,
-            $this->setTTL($data["tokenExpires"])
-        );
+        Cache::put($key, $attributes, $this->setTTL($data['tokenExpires'] ?? null));
 
         return $attributes;
     }
 
     /**
-     * @param string $timestamp
-     * @return int
+     * tokenExpires может отсутствовать (бессрочный токен): тогда TTL из конфига
      */
-    protected function setTTL(string $timestamp): int
+    protected function setTTL(?string $timestamp): int
     {
+        if (blank($timestamp)) {
+            return CacheKey::ttl();
+        }
+
         $date = Carbon::createFromTimeString($timestamp);
 
         $diff = now()->diffInSeconds($date, true);
@@ -97,28 +106,39 @@ trait LoginUser
      * @return void
      * @throws InvalidTokenException
      */
-    public function forceStop(string $message = ''): void
+    public function forceStop(string $message = '', ?string $token = null): void
     {
-        $this->clearCache();
+        $this->clearCache($token);
 
         throw new InvalidTokenException($message);
     }
 
     /**
-     * @return void
+     * Сбросить кэш токена; без аргумента - токен последнего prepareAttributesForLogin
      */
-    public function clearCache(): void
+    public function clearCache(?string $token = null, ?string $args = null): void
     {
-        Cache::forget($this->tokenCacheKey());
-        Cache::forget($this->cacheKey());
+        $token ??= $this->currentToken;
+        $args ??= $this->currentArgs;
+
+        $this->currentToken = null;
+        $this->currentArgs = null;
+
+        if (blank($token)) {
+            return;
+        }
+
+        Cache::forget($this->cacheKey($token, $args));
     }
 
     /**
+     * @param array       $attributes
+     * @param string|null $token токен из запроса; без него войти нельзя
      * @throws InvalidTokenException
      */
-    public function login(array $attributes): void
+    public function login(array $attributes, ?string $token = null): void
     {
-        $token = Cache::get($this->tokenCacheKey());
+        $token ??= $this->currentToken;
 
         if (blank($token)) {
             $this->forceStop("Token is empty");
