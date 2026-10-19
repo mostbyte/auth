@@ -19,6 +19,9 @@ trait LoginUser
      * Токен текущего вызова: нужен для clearCache() без аргумента (совместимость).
      * Перезаписывается при каждом prepareAttributesForLogin и сбрасывается после очистки.
      */
+    /** TTL кэша для токена без tokenExpires, секунды */
+    private const EMPTY_EXPIRES_TTL = 600;
+
     private ?string $currentToken = null;
 
     private ?string $currentArgs = null;
@@ -83,12 +86,12 @@ trait LoginUser
     }
 
     /**
-     * tokenExpires может отсутствовать (бессрочный токен): тогда TTL из конфига
+     * tokenExpires может отсутствовать (бессрочный токен): кэшируем коротко, не на полный TTL
      */
     protected function setTTL(?string $timestamp): int
     {
         if (blank($timestamp)) {
-            return CacheKey::ttl();
+            return min(self::EMPTY_EXPIRES_TTL, CacheKey::ttl());
         }
 
         $date = Carbon::createFromTimeString($timestamp);
@@ -151,6 +154,10 @@ trait LoginUser
         $user = Auth::user();
 
         $user->setToken($token);
+
+        // токен не должен перетечь в следующий вызов в долгоживущем процессе
+        $this->currentToken = null;
+        $this->currentArgs = null;
     }
 
     protected function getUser(array $attributes): User

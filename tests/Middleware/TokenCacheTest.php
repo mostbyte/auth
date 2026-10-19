@@ -94,4 +94,45 @@ class TokenCacheTest extends TestCase
         $this->callAs('tok-x')->assertUnauthorized();
         $this->assertFalse(Cache::has($this->keyFor('tok-x')));
     }
+
+    public function test_login_resets_current_token(): void
+    {
+        $this->fakeByToken(['tok-a' => 'user-a']);
+
+        $obj = new class {
+            use \Mostbyte\Auth\Traits\LoginUser;
+        };
+
+        $attributes = $obj->prepareAttributesForLogin('Bearer tok-a');
+        $obj->login($attributes);
+
+        // после login токен забыт: clearCache() без аргументов ничего не сбрасывает
+        $obj->clearCache();
+        $this->assertTrue(Cache::has($this->keyFor('tok-a')));
+    }
+
+    public function test_token_without_expires_is_cached_briefly(): void
+    {
+        Http::swap(new \Illuminate\Http\Client\Factory());
+        Http::fake(fn() => Http::response([
+            'success' => true,
+            'data' => ['user' => User::attributes()],
+        ]));
+
+        $this->callAs('tok-a')->assertOk();
+        $this->assertTrue(Cache::has($this->keyFor('tok-a')));
+
+        $this->travel(11)->minutes();
+        $this->assertFalse(Cache::has($this->keyFor('tok-a')));
+    }
+
+    public function test_unexpected_error_hides_message(): void
+    {
+        Http::swap(new \Illuminate\Http\Client\Factory());
+        Http::fake(fn() => throw new \RuntimeException('secret internal detail'));
+
+        $this->callAs('tok-a')
+            ->assertUnauthorized()
+            ->assertExactJson(['success' => false, 'message' => 'Unauthorized']);
+    }
 }
