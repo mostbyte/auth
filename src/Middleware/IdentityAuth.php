@@ -65,7 +65,7 @@ class IdentityAuth
 
             return response([
                 'success' => false,
-                'message' => $e->getMessage(),
+                'message' => 'Unauthorized',
             ], 401);
         }
 
