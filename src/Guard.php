@@ -28,12 +28,12 @@ class Guard
             return null;
         }
 
-        try {
-            $args = $this->no_domain ? 'no-domain' : null;
+        $args = $this->no_domain ? 'no-domain' : null;
 
+        try {
             $attributes = $this->prepareAttributesForLogin($token, $args);
         } catch (ConnectionException|InvalidTokenException $e) {
-            $this->clearCache();
+            $this->clearCache($token, $args);
             report($e);
 
             return null;
