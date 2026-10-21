@@ -28,7 +28,7 @@ class Guard
         try {
             $attributes = $this->prepareAttributesForLogin($token);
         } catch (ConnectionException|InvalidTokenException $e) {
-            $this->clearCache();
+            $this->clearCache($token);
             report($e);
 
             return null;
