@@ -38,14 +38,14 @@ class IdentityAuth
      */
     public function handle(Request $request, Closure $next, ?string $args = null): mixed
     {
-        try {
-            $token = $request->header('Authorization');
+        $token = $request->header('Authorization');
 
+        try {
             $attributes = $this->prepareAttributesForLogin($token, $args);
 
-            $this->login($attributes);
+            $this->login($attributes, $token);
         } catch (InvalidTokenException $e) {
-            $this->clearCache();
+            $this->clearCache($token, $args);
 
             report($e);
 
@@ -65,7 +65,7 @@ class IdentityAuth
 
             return response([
                 'success' => false,
-                'message' => $e->getMessage(),
+                'message' => 'Unauthorized',
             ], 401);
         }
 
