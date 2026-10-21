@@ -33,7 +33,7 @@ php artisan vendor:publish --provider="Mostbyte\Auth\AuthServiceProvider"
 1. **Request** → HTTP request with `Authorization: Bearer <token>` header
 2. **IdentityAuth Middleware** → Extracts token, validates via `LoginUser::prepareAttributesForLogin()`
 3. **Identity Service Client** → Makes HTTP request to `IDENTITY_BASE_URL/api/v1/auth/check-token`
-4. **Cache Layer** → Caches user/token with TTL (2 hours default), key includes company + IP + device-id
+4. **Cache Layer** → Caches user attributes with TTL (2 hours default), one key per token: company + sha256(token) (+ no-domain); no IP or device-id
 5. **User Model** → Created with company and role relationships, authenticated via Laravel Auth
 
 ### Key Components

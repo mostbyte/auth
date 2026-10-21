@@ -7,8 +7,7 @@ namespace Mostbyte\Auth\Enums;
 enum CacheKey: string
 {
 
-    case AUTH_TOKEN = "auth-token";
-    case AUTH_USER = "auth-user";
+    case AUTH_USER = "auth";
 
     /**
      * Auth TTL time
@@ -21,25 +20,16 @@ enum CacheKey: string
     }
 
     /**
-     * Get a cache key with prefix ip and user-agent
-     *
-     * @param mixed ...$suffix
-     * @return string
+     * Ключ кэша пользователя: компания + sha256 токена (+ args). Сам токен в ключ не попадает.
      */
-    public function withPrefix(...$suffix): string
+    public function withToken(string $token, ?string $args = null): string
     {
-        $company = identity()->getCompany();
-
-        $suffix[] = request()->ip();
-        $suffix[] = request()->header('device-id', "some-device-id");
-
-        $suffix = implode('-', $suffix);
-
         return sprintf(
-            '%s-%s-%s',
-            $company,
+            '%s-%s-%s%s',
+            identity()->getCompany(),
             $this->value,
-            $suffix
+            hash('sha256', $token),
+            $args ? "-$args" : ''
         );
     }
 }
