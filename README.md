@@ -33,8 +33,11 @@ Instead, you may of course manually update your require block and run `composer 
 php artisan vendor:publish --provider="Mostbyte\Auth\AuthServiceProvider"
 ```
 
-> Warning: In production, in `.env` you should specify `LOCAL_DEVELOPMENT=false`. Otherwise your all
-> http requests will be handled by faker
+> **Warning**
+> `LOCAL_DEVELOPMENT=true` makes every request to the identity service return a fake
+> success response, so **any token is accepted as a valid superUser**. The default is
+> `false` (since 3.3.3): a service that never sets the variable is secure. Opt in
+> explicitly with `LOCAL_DEVELOPMENT=true` in your local `.env` only.
 
 ## Using
 
